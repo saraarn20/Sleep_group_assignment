@@ -60,13 +60,25 @@ SL_dic = {}
 # ===================
 yo = []
 
+empty_count = 0
+full_count = 0
+total_count = 0
+analysed_subjects = 0
+
 def analyse_file(csv_file):
+  global empty_count
+  global full_count
+  global total_count
+  global analysed_subjects
+
   # Read file
   sleep_csv = pd.read_csv(csv_file)
   sleep_df = pd.DataFrame(sleep_csv)
 
   f = open(csv_file, "r")
   subject = f.readline().split(",")[1]
+  f.close()
+  analysed_subjects += 1
 
   print('------------------------------------------------')
   print('SUBJECT', subject)
@@ -76,16 +88,22 @@ def analyse_file(csv_file):
   day = 1
   SE_list = []
 
-  for day in range(1, 4):
+  for day in range(1, 8):
     FMT = '%H:%M'
 
     # total sleep time 
     TST_total = sleep_df.iat[9,day]
+    print(sleep_df.iat[9,day], str(sleep_df.iat[9,day]))
 
-    if sleep_df.iat[9,day] == 'x':
+    total_count += 1
+    if sleep_df.iat[9,day] == 'x' or sleep_df.iat[9,day] == 0 or sleep_df.iat[9,day] == '' or str(sleep_df.iat[9,day]) == 'nan':
       TST = 'x'
-      print('empty entry x')
+      print('empty entry x', subject)
+      empty_count += 1
+      continue
     else:
+      full_count += 1
+      print(TST_total)
       TST = int(TST_total.split(':')[0]) * 60 + int(TST_total.split(':')[1])
 
 
@@ -164,6 +182,7 @@ def analyse_file(csv_file):
 SE for all days: {SE_list}
 Average: {se}
 First three: {three}
+
 """.format(three=3, subject=subject, SE_list=str(SE_list), se=str(sum(SE_list) / len(SE_list))))
   f.close()
 
@@ -173,9 +192,11 @@ First three: {three}
 # for each file in folder: 
 csv_files_in_folder = glob.glob("./sleep_diaries/*.csv")
 
-for fil in csv_files_in_folder:
-  analyse_file(fil)
 
+for fil in csv_files_in_folder:
+  print(fil)
+  analyse_file(fil)
+# analyse_file("./sleep_diaries/210.csv")
 
 # print to copy over to sas_vs_diary.. 
 print('--------')
@@ -186,3 +207,10 @@ print('--------')
 print("SL_dic", len(SL_dic), SL_dic)
 print('--------')
 print("WASO_dic", len(WASO_dic), WASO_dic)
+
+print()
+
+print("empty_count", empty_count)
+print("full_count", full_count)
+print("total_count", total_count)
+print("analysed_subjects", analysed_subjects)

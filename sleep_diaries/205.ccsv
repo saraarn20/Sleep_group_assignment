@@ -2,7 +2,7 @@ Rannsóknarnúmer: ,SRI 0205,,,,,,
 ,Dagur 1,Dagur 2,Dagur 3,Dagur 4,Dagur 5,Dagur 6,Dagur 7
 1. Klukkan hvað fórst þú í rúmið?,0:50,0:45,1:00,1:50,23:50,23:55,1:10
 2. Klukkan hvað reyndir þú að fara að sofa?,0:50,0:45,1:00,1:50,0:00,0:10,1:10
-3. Hvað tók þig langan tíma að fara að sofa?,10 mín,5 mín,5 mín,2 mín,3 mín,"0,5 mín",5 mín
+3. Hvað tók þig langan tíma að fara að sofa?,10 min,5 min,5 min,2 min,3 min,0,5 min,5 min
 4. Hversu oft vaknaðir þú áður en þú vaknaðir endanlega,ca. 10x,ca. 5x,ca. 2x,ca. 3x,ca. 6x,0,ca. 3x
 5. Hversu lengi vaktir þú samtals?,10 mín,2 mín,20 mín,10 mín,10 mín,-,2 mín
 6a. Klukkan hvað vaknaðir þú endanlega,8:30,8:30,8:25,9:50,8:15,7:45,9:10
@@ -18,6 +18,8 @@ Rannsóknarnúmer: ,SRI 0205,,,,,,
 13a. Hversu marga koffín drykki drakkst þú?,0,0,0,0,0,0,0
 13b. Klukkan hvað drakkstu seinasta drykkinn?,-,-,-,-,-,-,-
 14. Kóst þú einhver lyf til þess að hjálpa þér að sofna?,Nei,Nei,Nei,Nei,Nei,Nei,Nei
+,,,,,,,
+,,,,,,,
 15. Athugasemdir?,-,-,-,-,-,-,-
 16. Var dagurinn vinnudagur eða frídagur?,Vinna,Vinna,Vinna,Vinna,Frí,Frí,Vinna
 17. Hversu þreytt/ur varst þú í dag?,2,2,4,3,2,1,2
