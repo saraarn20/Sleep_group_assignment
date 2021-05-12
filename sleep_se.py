@@ -170,7 +170,6 @@ First three: {three}
   yo.append((subject, str(sum(SE_list) / len(SE_list))))
 
 
-
 # for each file in folder: 
 csv_files_in_folder = glob.glob("./sleep_diaries/*.csv")
 
