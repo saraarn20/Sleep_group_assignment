@@ -75,6 +75,10 @@ WASO_dic_av = av_dic(WASO_dic)
 # TST plot
 plt.figure(figsize=(10, 7))
 X = np.arange(len(TST_average))
+colors = {'TST from SAS':'b', 'TST from Sleep Diary':'r'}         
+labels = list(colors.keys())
+handles = [plt.Rectangle((0,0),1,1, color=colors[label]) for label in labels]
+plt.legend(handles, labels)
 plt.bar(X-0.125, TST_average.values(), align='center', color = 'b', width = 0.25, label='TST from SAS')
 plt.bar(X+0.125, TST_dic_av.values(), align='center', color = 'r', width = 0.25, label='TST from Sleep Diary')
 plt.xticks(X, list(TST_average.keys()))
@@ -88,6 +92,10 @@ plt.savefig('TST.png')
 # SE plot
 plt.figure(figsize=(10, 7))
 X = np.arange(len(SE_average))
+colors = {'SE from SAS':'b', 'SE from Sleep Diary':'r'}         
+labels = list(colors.keys())
+handles = [plt.Rectangle((0,0),1,1, color=colors[label]) for label in labels]
+plt.legend(handles, labels)
 plt.bar(X-0.125, SE_average.values(), align='center', color = 'b', width = 0.25, label='SE from SAS')
 plt.bar(X+0.125, SE_dic_av.values(), align='center', color = 'r', width = 0.25, label='SE from Sleep Diary')
 plt.xticks(X, list(SE_average.keys()))
@@ -101,6 +109,10 @@ plt.savefig('SE.png')
 # WASO plot
 plt.figure(figsize=(10, 7))
 X = np.arange(len(WASO_average))
+colors = {'WASO from SAS':'b', 'WASO from Sleep Diary':'r'}         
+labels = list(colors.keys())
+handles = [plt.Rectangle((0,0),1,1, color=colors[label]) for label in labels]
+plt.legend(handles, labels)
 plt.bar(X-0.125, WASO_average.values(), align='center', color = 'b', width = 0.25, label='WASO from SAS')
 plt.bar(X+0.125, WASO_dic_av.values(), align='center', color = 'r', width = 0.25, label='WASO from Sleep Diary')
 plt.xticks(X, list(WASO_average.keys()))
@@ -114,6 +126,11 @@ plt.savefig('WASO.png')
 # SL plot
 plt.figure(figsize=(10, 7))
 X = np.arange(len(SL_average))
+colors = {'SL from SAS':'b', 'SL from Sleep Diary':'r'}         
+labels = list(colors.keys())
+handles = [plt.Rectangle((0,0),1,1, color=colors[label]) for label in labels]
+plt.legend(handles, labels)
+
 plt.bar(X-0.125, SL_average.values(), align='center', color = 'b', width = 0.25, label='SL from SAS')
 plt.bar(X+0.125, SL_dic_av.values(), align='center', color = 'r', width = 0.25, label='SL from Sleep Diary')
 plt.xticks(X, list(SL_average.keys()))
