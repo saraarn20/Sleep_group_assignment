@@ -1,0 +1,4 @@
+empty_count 8
+full_count 55
+total_count 63
+analysed_subjects 9
