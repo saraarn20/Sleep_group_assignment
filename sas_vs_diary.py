@@ -15,10 +15,8 @@ print(sas_df)
 
 def data_to_minutes(data):
   yo = data.split(' ')
-
   value = int(yo[0])*60
   value = value + int(yo[1])
-
   return value
 
 TST = {}

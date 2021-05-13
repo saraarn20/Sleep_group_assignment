@@ -2,42 +2,10 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 import glob
+import matplotlib
+import matplotlib.pyplot as plt
+import statistics
 
-# =============================
-# = Info & example from paper =
-# =============================
-
-# SE = TST / DSE (× 100)
-# DSE = SOL + TST + WASO + TASAFA
-
-# DSE, duration of the sleep episode SCT, stimulus control therapy
-# SE, sleep efficiency
-# SOL, sleep onset latency
-# SRT, sleep restriction therapy
-# TASAFA, time attempting to sleep after the final awakening TIB, time in bed
-# TST, total sleep time
-# WASO, time awake after initial sleep onset but before final awakening
-
-# into bed 22:15
-# tries to go to sleep 23:30
-# falls a sleep 55 later
-# wakes up 3 times
-# wakes for 70 minutes
-# final awakening 6:35
-# stays in bed till 7:20
-# ==== >
-# TST = 300 minutes 
-# TIB = 545 minutes
-# SOL = 55 minutes
-# TST = 300 minutes
-# WASO = 70 minutes
-# TASAFA = 45 minutes
-
-f = open("SE_Results.txt", "w")
-f.write("")
-f.close()
-
-# Helpercle
 def data_to_minutes(data):
   if data.lower().endswith("klst") or data.lower().endswith("tíma"):
     value = data.split()[0]
@@ -55,24 +23,18 @@ TST_dic = {}
 SE_dic = {}
 WASO_dic = {}
 SL_dic = {}
-COV_dic = {}
-
-# ===================
-# = Data Processing =
-# ===================
 
 empty_count = 0
 full_count = 0
 total_count = 0
 analysed_subjects = 0
-day_count_average = []
+day_count = {}
 
 def analyse_file(csv_file):
   global empty_count
   global full_count
   global total_count
   global analysed_subjects
-  global day_count_average
 
   # Read file
   sleep_csv = pd.read_csv(csv_file)
@@ -90,13 +52,8 @@ def analyse_file(csv_file):
 
   day = 1
   SE_list = []
-  TST_list = []
-  TIB_list = []
-  WASO_list = []
-  SOL_list = []
-  TASAFA_list = []
-  COOF = []
 
+  global day_count 
 
   for day in range(1, 8):
     FMT = '%H:%M'
@@ -116,11 +73,10 @@ def analyse_file(csv_file):
       print(TST_total)
       TST = int(TST_total.split(':')[0]) * 60 + int(TST_total.split(':')[1])
 
-    TST_list.append(TST)
+    if day not in day_count:
+      day_count[day] = 0
+    day_count[day] = day_count[day] + 1
 
-    # print("TST_total" ,TST_total)
-    # print("TST", TST)
-    
     time_to_bed = datetime.strptime(sleep_df.iat[1,day], FMT)
     time_out_of_bed = datetime.strptime(sleep_df.iat[8,day], FMT)
 
@@ -131,7 +87,6 @@ def analyse_file(csv_file):
 
     TIB = time_out_of_bed - time_to_bed
     TIB = TIB.total_seconds() / 60 # set to minutes
-    TIB_list.append(TIB)
 
     # =======
     # = SOL =
@@ -139,7 +94,6 @@ def analyse_file(csv_file):
 
     SOL_data = sleep_df.iat[3,day] 
     SOL = data_to_minutes(SOL_data)
-    SOL_list.append(SOL)
 
     # ========
     # = WASO =
@@ -147,8 +101,6 @@ def analyse_file(csv_file):
 
     WASO_data = sleep_df.iat[5,day] 
     WASO = data_to_minutes(WASO_data)
-    WASO_list.append(WASO)
-    # print(WASO)
 
 
     # ==========
@@ -163,9 +115,7 @@ def analyse_file(csv_file):
 
     TASAFA = leaves_bed - final_awake
     TASAFA = TASAFA.total_seconds() / 60 # set to minutes
-    TASAFA_list.append(TASAFA)
 
-    # print("TASAFA", TASAFA)
 
     # ==============================
     # = Calculate Sleep Efficiency =
@@ -174,12 +124,6 @@ def analyse_file(csv_file):
     DSE = SOL + TST + WASO + TASAFA
     SE = (TST / DSE) * 100
     SE_list.append(SE)
-
-    print(sleep_df.iat[16,day])
-    COOF.append(int(sleep_df.iat[16,day].split()[0]))
-
-    if subject == "SRI 0202":
-      print('YO')
 
     if subject in TST_dic:
       TST_dic[subject].append(TST)
@@ -192,29 +136,6 @@ def analyse_file(csv_file):
       WASO_dic[subject] = [WASO]
       SE_dic[subject] = [SE]
 
-  f = open("SE_Results.txt", "a")
-  f.write(
-"""SUBJECT: {subject}
-SE for all days: {SE_list}
-Average: {se}
-Len: {le}
-TST: {TST_lis}
-WASO: {WASO_lis}
-SOl: {SOL_lis}
-COFF: {cof_lis}
-
-""".format(le=str(len(SE_list)), 
-subject=subject, 
-SE_list=str(SE_list), 
-TST_lis=str(TST_dic[subject]),
-WASO_lis=str(WASO_dic[subject]),
-SOL_lis=str(SL_dic[subject]),
-se=str(sum(SE_list) / len(SE_list)),
-cof_lis=str(COOF)))
-  
-  f.close()
-
-  day_count_average.append(len(SE_list) / 7)
 
 
 # for each file in folder: 
@@ -222,37 +143,26 @@ csv_files_in_folder = glob.glob("./sleep_diaries/*.csv")
 
 
 for fil in csv_files_in_folder:
-  # print(fil)
   analyse_file(fil)
-# analyse_file("./sleep_diaries/210.csv")
-
-# print to copy over to sas_vs_diary.. 
-print('--------')
-print("SE_dic", len(SE_dic), SE_dic)
-print('--------')
-print("TST_dic", len(TST_dic), TST_dic)
-print('--------')
-print("SL_dic", len(SL_dic), SL_dic)
-print('--------')
-print("WASO_dic", len(WASO_dic), WASO_dic)
-
-print()
-
-print("empty_count", empty_count)
-print("full_count", full_count)
-print("total_count", total_count)
-print("analysed_subjects", analysed_subjects)
 
 
-# 'SRI 0202': [120, 60, 60], 
-# 'SRI 0203': [30, 30, 30], 
-# 'SRI 0205': [10, 2, 20], 
-# {'SRI 0208': [5, 3, 3], 
-# 'SRI 0209': [20, 0, 0], 
-# 'SRI 0210': [20, 10, 5], 
-# 'SRI 0211': [10, 30, 15], 
-# 'SRI 0213': [15, 5, 5], 
-# 'SRI 0215': [1, 1, 1]}
-# 'SRI 0217': [20, 3, 3], 
 
-print(day_count_average)
+# day_count = {1: 10, 2: 10, 3: 10, 4: 9, 5: 9, 6: 7, 7: 7, 8: 16 , 9: 14 , 10: 13 , 11: 15 , 12: 15 , 13: 13 , 14: 11 }
+# keys = day_count.keys()
+# values = day_count.values()
+# plt.bar(keys, values)
+# plt.savefig("paper_perday.png")
+
+
+# 135.0: 14, 290.0: 8, 185.0: 11, 340.0: 8, 235.0: 7, 30.0: 10, 80.0: 11
+
+
+# 8: 14 +, 9: 8 +, 10: 11 +, 11: 8 +, 12: 7 +, 13: 10 +, 14: 11 +
+
+# 14 +8 +11 +8 +7 +10 +11 +
+
+paper = [1.0, 1.0, 1.0, 1.0, 0.7142857142857143, 0.7142857142857143, 1.0, 0.42857142857142855, 1.0, 1.0]
+app = [1.0, 0.8571428571428571, 0.8571428571428571, 1.0, 0.8571428571428571, 1.1428571428571428, 0.8571428571428571, 0.5714285714285714, 0.8571428571428571, 1.0, 0.7142857142857143, 0.8571428571428571, 0.5714285714285714, 1.0, 1.0, 1.0]
+
+print(statistics.mean(paper), statistics.stdev(paper))
+print(statistics.mean(app), statistics.stdev(app))
