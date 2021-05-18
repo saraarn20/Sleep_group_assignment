@@ -39,6 +39,8 @@ f.close()
 
 # Helpercle
 def data_to_minutes(data):
+  if str(data) == 'nan':
+    return 0
   if data.lower().endswith("klst") or data.lower().endswith("tíma"):
     value = data.split()[0]
     value = int(value)*60
@@ -98,7 +100,7 @@ def analyse_file(csv_file):
   COOF = []
 
 
-  for day in range(1, 8):
+  for day in range(1, 4):
     FMT = '%H:%M'
 
     # total sleep time 
@@ -138,6 +140,7 @@ def analyse_file(csv_file):
     # =======
 
     SOL_data = sleep_df.iat[3,day] 
+    print('sol')
     SOL = data_to_minutes(SOL_data)
     SOL_list.append(SOL)
 
@@ -146,6 +149,7 @@ def analyse_file(csv_file):
     # ========
 
     WASO_data = sleep_df.iat[5,day] 
+    print('waso')
     WASO = data_to_minutes(WASO_data)
     WASO_list.append(WASO)
     # print(WASO)
@@ -176,10 +180,10 @@ def analyse_file(csv_file):
     SE_list.append(SE)
 
     print(sleep_df.iat[16,day])
-    COOF.append(int(sleep_df.iat[16,day].split()[0]))
-
-    if subject == "SRI 0202":
-      print('YO')
+    co = sleep_df.iat[16,day].split()[0]
+    if co == "x":
+      co = -1
+    COOF.append(int(co))
 
     if subject in TST_dic:
       TST_dic[subject].append(TST)
@@ -222,7 +226,6 @@ csv_files_in_folder = glob.glob("./sleep_diaries/*.csv")
 
 
 for fil in csv_files_in_folder:
-  # print(fil)
   analyse_file(fil)
 # analyse_file("./sleep_diaries/210.csv")
 
@@ -242,17 +245,5 @@ print("empty_count", empty_count)
 print("full_count", full_count)
 print("total_count", total_count)
 print("analysed_subjects", analysed_subjects)
-
-
-# 'SRI 0202': [120, 60, 60], 
-# 'SRI 0203': [30, 30, 30], 
-# 'SRI 0205': [10, 2, 20], 
-# {'SRI 0208': [5, 3, 3], 
-# 'SRI 0209': [20, 0, 0], 
-# 'SRI 0210': [20, 10, 5], 
-# 'SRI 0211': [10, 30, 15], 
-# 'SRI 0213': [15, 5, 5], 
-# 'SRI 0215': [1, 1, 1]}
-# 'SRI 0217': [20, 3, 3], 
 
 print(day_count_average)
